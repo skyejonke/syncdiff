@@ -4,26 +4,40 @@ using namespace std;
 
 file::file(string dirIn){
   directory = dirIn;
+
+  string tempname = "";
+  for (auto i = dirIn.cbegin(); i != dirIn.cend(); ++i){
+    if (*i == '/'){
+      tempname = "";
+    }
+    else{
+      tempname += *i;
+    }
+  }
+  bool dot = false;
+  ext = "";
+  for (auto i = tempname.cbegin(); i != tempname.cend(); ++i){
+    if (dot){
+      ext += *i;
+    }
+    if (*i == '.'){
+      ext = "";
+      dot = true;
+    }
+  }
 }
 
-bool file::isSource(string pathIn){
+bool file::isSource(std::shared_ptr<file> fileIn){
   /* auto fi; */
-  int namelen = 0;
-  for (auto pi = pathIn.cend(); pi != pathIn.cbegin(); --pi){
-    if (to_string(*pi) == "/"){
-      break;
-    }
-    namelen++;
-  }
-  namelen = pathIn.size() - namelen;
+
   auto ni = name.begin();
   ni++;
   int i = 0;
-  for(auto pi = pathIn.cbegin(); pi != pathIn.cend() && ni != name.cend(); ++pi){
-    if (i > namelen){
+  for(auto fi = fileIn->directory.cbegin(); fi != fileIn->directory.cend() && fi != name.cend(); ++fi){
+    if (i > directory.size()){
 
-      if (*pi != *ni){
-        if (to_string(*pi) == "~" || to_string(*pi) == "2" || to_string(*pi) == "0"){
+      if (*fi != *ni){
+        if (to_string(*fi) == "~" || to_string(*fi) == "2" || to_string(*fi) == "0"){
           cout << "stuff";
 
         }
@@ -31,6 +45,12 @@ bool file::isSource(string pathIn){
       ++ni;
     }
   }
+}
+
+// Check if the two files refer to the same file
+bool file::isName(shared_ptr<file> fileIn){
+  return(fileIn->name == name && fileIn->ext == ext);
+
 }
 
 vector<string> file::getContents() {
@@ -61,41 +81,5 @@ bool file::setContents(shared_ptr<file> fileIn){
 
 
 
-int main() {
-  parser par = parser();
-  /* file test = file("test.txt"); */
-  /* vector<string> t = test.getContents(); */
 
-  /* shared_ptr<file> ptr (new file("test.txt")); */
-
-  /* shared_ptr<conflictFile> cTest( */
-  /*     new conflictFile("test2.txt",ptr)); */
-
-  /* auto ints = cTest->compare(); */
-
-  /* if (ints->size() != 0){ */
-  /*   bool done = false; */
-
-  /*   cout << "Keep? (l/r, 1/2)" << endl; */
-  /*   string in; */
-  /*   cin >> in; */
-
-  /*   while (!done){ */
-  /*     if (in == "l" || in == "1"){ */
-  /*       done = true; */
-  /*     } */
-  /*     else if (in == "r" || in == "2"){ */
-  /*       done = true; */
-  /*       test.setContents(cTest); */
-  /*     } */
-  /*     else { */
-  /*       cout << "Please input again." << endl; */
-  /*       cin >> in; */
-  /*     } */
-  /*   } */
-  /* } */
-
-
-  return 0;
-}
 

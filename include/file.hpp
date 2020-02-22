@@ -11,10 +11,12 @@ class file {
     file(std::string dirIn);
     std::vector<std::string> getContents();
     bool setContents(std::shared_ptr<file> fileIn);
-    bool isSource(std::string pathIn);
+    bool isSource(std::shared_ptr<file> fileIn);
+    bool isName(std::shared_ptr<file> fileIn);
   private:
     std::string directory;
     std::string name;
+    std::string ext;
 };
 
 #include "conflictfile.hpp"

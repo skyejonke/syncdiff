@@ -10,19 +10,19 @@ SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpeda
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(syncdiff src/file.cpp src/conflictFile.cpp src/parser.cpp)
-# add_library(doglib STATIC src/dog.cpp src/command.cpp src/event.cpp src/console.cpp )
-# target_link_libraries(doglib skyelib)
+add_library(syncdiffLib STATIC src/file.cpp src/conflictFile.cpp src/parser.cpp)
+add_executable(syncdiff src/main.cpp)
+target_link_libraries(syncdiff syncdiffLib)
 # add_executable(dog src/main.cpp)
 # target_link_libraries(dog doglib)
-# add_executable(tests test/test.cpp)
-# target_link_libraries(tests doglib)
+add_executable(tests test/test.cpp)
+target_link_libraries(tests syncdiffLib )
 # install(TARGETS dog doglib
 #   RUNTIME DESTINATION bin
 #   LIBRARY DESTINATION lib
 #   ARCHIVE DESTINATION lib/static)
-# enable_testing()
-# add_test(NAME mainTest COMMAND tests)
+enable_testing()
+add_test(NAME mainTest COMMAND tests)
 
 # SET(CPACK_GENERATOR "DEB")
 # SET(CPACK_DEBIAN_FILE_NAME, "syncdiff")
