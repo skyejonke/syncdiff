@@ -20,9 +20,14 @@ parser::parser(){
     }
     else {
       while(getline(ifile, line)) {
-        cout << line << endl;
-        //  files.push_back(new file(dir.append(line)));
-        line = "";
+        if (line.substr(0,11) == ".stversions"){
+          files.push_back(shared_ptr<file> (new conflictFile(dir.append(line))));
+          line = "";
+        }
+        else{
+          files.push_back(shared_ptr<file> (new file(dir.append(line))));
+          line = "";
+        }
       }
     }
     dir = "";

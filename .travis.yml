@@ -1,0 +1,7 @@
+language: C++
+dist: Bionic
+before_install:
+  - sudo apt-get -y install cmake
+addons:
+  apt:
+    update: true
