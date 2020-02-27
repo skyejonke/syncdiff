@@ -2,9 +2,15 @@
 
 using namespace std;
 
-conflictFile::conflictFile(string dirIn, shared_ptr<file> sourceIn) : file(dirIn){
-  source = sourceIn;
+conflictFile::conflictFile(string dirIn): file(dirIn){
+  source = NULL;
 }
+
+bool conflictFile::setSource(shared_ptr<file> fileIn){
+  source = fileIn;
+  return true;
+}
+
 
 shared_ptr<vector<int>> conflictFile::compare(){
   int linesize = 70;

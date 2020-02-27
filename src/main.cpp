@@ -1,4 +1,5 @@
 #include "file.hpp"
+#include "parser.hpp"
 
 int main() {
   parser par = parser();

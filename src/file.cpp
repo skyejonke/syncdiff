@@ -2,11 +2,14 @@
 
 using namespace std;
 
+// Standard constructor
 file::file(string dirIn){
   directory = dirIn;
 
   string tempname = "";
+  // Iterate through the directory, extract the name + the extension
   for (auto i = dirIn.cbegin(); i != dirIn.cend(); ++i){
+    // If we reach a directory marker, reset the name
     if (*i == '/'){
       tempname = "";
     }
@@ -16,6 +19,7 @@ file::file(string dirIn){
   }
   bool dot = false;
   ext = "";
+  // Iterate through the extrated name + extension, and extract the extension
   for (auto i = tempname.cbegin(); i != tempname.cend(); ++i){
     if (dot){
       ext += *i;
@@ -25,26 +29,29 @@ file::file(string dirIn){
       dot = true;
     }
   }
-}
 
-bool file::isSource(std::shared_ptr<file> fileIn){
-  /* auto fi; */
-
-  auto ni = name.begin();
-  ni++;
-  int i = 0;
-  for(auto fi = fileIn->directory.cbegin(); fi != fileIn->directory.cend() && fi != name.cend(); ++fi){
-    if (i > directory.size()){
-
-      if (*fi != *ni){
-        if (to_string(*fi) == "~" || to_string(*fi) == "2" || to_string(*fi) == "0"){
-          cout << "stuff";
-
-        }
-      }
-      ++ni;
+  // Iterate backwards through the name + extension, extracting the name.
+  for (auto i = tempname.cend(); i >= tempname.cbegin(); --i){
+    if (*i == '.' || *i == '~'){
+      name = "";
+    }
+    else{
+      // Put each character at the back of the name (to effectively reverse it)
+      name = *i + name;
     }
   }
+}
+
+// Is this file the source of the given file?
+bool file::isSource(std::shared_ptr<file> fileIn){
+  if (isName(fileIn)){
+    for(auto fi = fileIn->directory.cbegin(); fi != fileIn->directory.cend(); ++fi){
+      if ((*fi == '~') && *(fi+1) == '2' && *(fi+2) == '0'){
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 // Check if the two files refer to the same file
@@ -79,7 +86,6 @@ bool file::setContents(shared_ptr<file> fileIn){
   return true;
 }
 
-
-
-
-
+string file::getName(){
+  return name;
+}
