@@ -21,7 +21,7 @@ parser::parser(){
     else {
       while(getline(ifile, line)) {
         if (line.substr(0,11) == ".stversions"){
-          files.push_back(shared_ptr<file> (new conflictFile(dir.append(line))));
+          confFiles.push_back(shared_ptr<conflictFile> (new conflictFile(dir.append(line))));
           line = "";
         }
         else{
@@ -32,5 +32,17 @@ parser::parser(){
     }
     dir = "";
   }
+}
 
+unique_ptr<vector<string>> parser::getNames(){
+  unique_ptr<vector<string>> output (new vector<string>);
+  for (auto it = files.begin(); it != files.end(); ++it){
+    shared_ptr<file> temp = *it;
+    output->push_back(temp->getName());
+  }
+for (auto it = confFiles.begin(); it != confFiles.end(); ++it){
+    shared_ptr<file> temp = *it;
+    output->push_back(temp->getName());
+  }
+  return output;
 }
