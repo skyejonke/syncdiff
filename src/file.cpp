@@ -89,3 +89,7 @@ bool file::setContents(shared_ptr<file> fileIn){
 string file::getName(){
   return name;
 }
+
+string file::getDirectory(){
+  return directory;
+}
