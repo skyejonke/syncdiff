@@ -14,6 +14,7 @@ class file {
     bool isSource(std::shared_ptr<file> fileIn);
     bool isName(std::shared_ptr<file> fileIn);
     std::string getName();
+    std::string getDirectory();
   private:
     std::string directory;
     std::string name;
