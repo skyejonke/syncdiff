@@ -14,29 +14,31 @@ bool conflictFile::setSource(shared_ptr<file> fileIn){
   return false;
 }
 
-shared_ptr<vector<int>> conflictFile::compare(){
-  int linesize = 70;
-  cout << source << endl;
-  shared_ptr<vector<int>> ints(new vector<int>);
+// Compare the conflict file and it's source, and return the lines that are
+// different.
+unique_ptr<vector<int>> conflictFile::compare(){
+  unsigned long linesize = 70;
+  //cout << source << endl;
+  unique_ptr<vector<int>> ints(new vector<int>);
 
   if (source != nullptr){
-    cout << source->getDirectory() << endl;
+    //cout << source->getDirectory() << endl;
     auto sour = source->getContents();
     auto conf = this->getContents();
     string sourline = "";
     string confline = "";
 
-    int len = (sour.size() >= conf.size())
+    unsigned long len = (sour.size() >= conf.size())
       ? sour.size() : conf.size();
 
     string sep;
-    for (int j = 0; j < linesize*2; j++){
+    for (unsigned long j = 0; j < linesize*2; j++){
       sep += "-";
     }
     cout << sep << endl;
 
 
-    for (int i = 0; i < len; i++){
+    for (unsigned long i = 0; i < len; i++){
       sourline = "";
       confline = "";
       if (i < sour.size()) {
@@ -52,9 +54,7 @@ shared_ptr<vector<int>> conflictFile::compare(){
         confline += "--";
       }
       else{
-        sourline = "  " + sourline;
-      }
-
+        sourline = "  " + sourline; }
       while (sourline.length() < linesize - 3){
         sourline += " ";
       }
@@ -65,16 +65,19 @@ shared_ptr<vector<int>> conflictFile::compare(){
         confline += " ";
       }
 
-      cout << to_string(i) << sourline << to_string(i) << "  " << confline << endl;
+      //cout << to_string(i) << sourline << to_string(i) << "  " << confline << endl;
 
     }
 
     sep = "";
-    for (int j = 0; j < linesize*2; j++){
+    for (unsigned long j = 0; j < linesize*2; j++){
       sep += "-";
     }
-    cout << sep << endl;
-    return ints;
-
+    //cout << sep << endl;
   }
+  return ints;
+}
+
+shared_ptr<file> conflictFile::getSource(){
+  return source;
 }

@@ -4,8 +4,10 @@
 class conflictFile : public file {
   public:
     conflictFile(std::string dirIn);
-    std::shared_ptr<std::vector<int>> compare();
+    std::unique_ptr<std::vector<int>> compare();
     bool setSource(std::shared_ptr<file> fileIn);
+    bool isConflict = true;
+    std::shared_ptr<file> getSource();
   private:
     std::shared_ptr<file> source;
 };
