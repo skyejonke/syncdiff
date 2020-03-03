@@ -8,6 +8,7 @@ class conflictFile : public file {
     bool setSource(std::shared_ptr<file> fileIn);
     bool isConflict = true;
     std::shared_ptr<file> getSource();
+    std::shared_ptr<file> makeSource();
   private:
     std::shared_ptr<file> source;
 };

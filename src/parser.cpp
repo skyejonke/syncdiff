@@ -17,7 +17,7 @@ parser::parser(){
     // Iterate through each of the lines in files, corresponding to all
     // of the files the command finds.
     while(getline(ifile, line)) {
-       // If the file is in the stversions directory.
+      // If the file is in the stversions directory.
       if (line.substr(0,13) == "./.stversions") {
         confFiles.push_back(shared_ptr<conflictFile> (new conflictFile(line)));
         line = "";
@@ -51,7 +51,6 @@ void parser::setSources(){
       shared_ptr<file> tempFile = *itf;
       shared_ptr<conflictFile> tempConf = *itc;
       if (tempFile->isName(tempConf)){
-        cout << "File: " << tempFile->getName() << endl;
         tempConf->setSource(tempFile);
       }
       else {
@@ -59,18 +58,24 @@ void parser::setSources(){
       }
     }
   }
+  for (auto c : confFiles){
+    if (c->getSource() == nullptr){
+      cout << c->getName() << endl;
+      c->makeSource();
+    }
+  }
 }
 
-unique_ptr<vector<parser::filePair>> parser::compareAll(){
-  unique_ptr<vector<parser::filePair>> out (new vector<parser::filePair>);
+vector<parser::filePair> parser::compareAll(){
+  vector<filePair> out = vector<filePair>();
   int i = 0;
   for (auto f : confFiles){
     if (f != NULL && f->isConflict){
-      parser::filePair temp;
-      temp.ints = (f->compare());
+      filePair temp;
+      temp.ints = *(f->compare());
       temp.conf = confFiles.at(i);
       temp.source = f->getSource();
-      out->push_back(temp);
+      out.push_back(temp);
     }
     i++;
   }

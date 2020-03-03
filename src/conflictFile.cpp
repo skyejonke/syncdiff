@@ -35,7 +35,7 @@ unique_ptr<vector<int>> conflictFile::compare(){
     for (unsigned long j = 0; j < linesize*2; j++){
       sep += "-";
     }
-    cout << sep << endl;
+    //cout << sep << endl;
 
 
     for (unsigned long i = 0; i < len; i++){
@@ -81,3 +81,44 @@ unique_ptr<vector<int>> conflictFile::compare(){
 shared_ptr<file> conflictFile::getSource(){
   return source;
 }
+
+shared_ptr<file> conflictFile::makeSource(){
+  cout << "started makesource" << endl;
+  if (source == nullptr){
+    cout << "Found NULL" << endl;
+    string nDir = "";
+    cout << getDirectory() << endl;
+    string dir = getDirectory();
+    bool withinVersions = false;
+    for (auto it = dir.cbegin(); it != dir.cend(); ++it){
+      cout <<  *(it+5) << endl;
+
+      if ((
+            *it == '.'
+            && *(it+1) == 's'
+            && *(it+2) == 't'
+            && *(it+3) == 'v')
+          || (
+            *it == '~'
+            && *(it+1) == '2'
+            && *(it+2) == '0')
+         ){
+        withinVersions = true;
+      }
+
+      if (!withinVersions){
+        nDir += *it;
+      }
+
+      if (*it == '/'){
+        withinVersions = false;
+      }
+
+
+    }
+    cout << nDir << endl;
+    source = shared_ptr<file> (new file(nDir));
+  }
+    return source;
+}
+
