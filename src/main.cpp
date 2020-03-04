@@ -4,7 +4,7 @@
 
 using namespace std;
 int main() {
-  unique_ptr<parser> par (new parser());
+  unique_ptr<parser> par (new parser("."));
   unique_ptr<vector<string>> names = par->getNames();
   auto pairs =  par->compareAll();
   for (auto it = pairs.begin(); it != pairs.cend(); ++it){

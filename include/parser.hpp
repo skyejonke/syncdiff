@@ -10,7 +10,7 @@ class parser {
   };
   public:
   //std::shared_ptr<file> getNextFile(); Probably not neccessary given you can just iterate over files/conffiles?
-  parser();
+  parser(std::string head);
   std::unique_ptr<std::vector<std::string>> getNames();
   void setSources();
   std::vector<filePair> compareAll();

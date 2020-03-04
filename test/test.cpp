@@ -80,3 +80,12 @@ TEST_CASE("make source works", "[make]"){
   shared_ptr<conflictFile> confFile(new conflictFile("/tmp/syncdiff/test~2019.txt"));
   REQUIRE((confFile->makeSource())->getDirectory() == testFile->getDirectory());
 }
+
+TEST_CASE("parser tests", "[test]"){
+  unique_ptr<parser> p (new parser("/tmp/Notes"));
+  vector<string> names = vector<string>();
+  names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
+  names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
+  names.push_back("test || /tmp/Notes/test.md");
+  REQUIRE(*(p->getNames()) == names);
+}

@@ -2,8 +2,10 @@
 
 using namespace std;
 
-parser::parser(){
-  system("find . -maxdepth 20 -type f > /tmp/ls.txt");
+parser::parser(string head){
+
+  /* system(("cd " + head).c_str()); */
+  system(("find " + head + " -maxdepth 20 -type f > /tmp/ls.txt").c_str());
   ifstream ifile = ifstream("/tmp/ls.txt");
 
   string line;
