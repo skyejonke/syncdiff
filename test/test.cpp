@@ -84,8 +84,33 @@ TEST_CASE("make source works", "[make]"){
 TEST_CASE("parser tests", "[test]"){
   unique_ptr<parser> p (new parser("/tmp/Notes"));
   vector<string> names = vector<string>();
-  names.push_back("test || /tmp/Notes/test.md");
-  names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
-  names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
-  REQUIRE(*(p->getNames()) == names);
+  SECTION("Get names"){
+    names.push_back("test || /tmp/Notes/test.md");
+    names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
+    names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
+    REQUIRE(*(p->getNames()) == names);
+  }
+
+  system("echo 'testtesttest\ntesttest' > /tmp/Notes/.stversions/test~2020.md");
+  system("echo 'testtesttest\ntesttest' > /tmp/Notes/.stversions/noSource~2020.md");
+  system("echo 'testtesttest\ntttttest' > /tmp/Notes/test.md");
+
+  vector<vector<int>> vs = vector<vector<int>>();
+  vector<int> intsTest = vector<int>();
+  vector<int> intsNo = vector<int>();
+
+  intsTest.push_back(1);
+  intsNo.push_back(0);
+  intsNo.push_back(1);
+
+  vs.push_back(intsTest);
+  vs.push_back(intsNo);
+  SECTION("Compare All"){
+    auto c = p->compareAll();
+    auto vi = vs.begin();
+    for (auto ci = c.begin(); ci != c.end(); ++ci){
+      REQUIRE(ci->ints == *vi);
+      ++vi;
+    }
+  }
 }
