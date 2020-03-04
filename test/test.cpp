@@ -38,6 +38,7 @@ TEST_CASE("conflict files work as intended", "[conflictFile]"){
 TEST_CASE("setting contents works correctly", "[contents]"){
   string str = "testtesttest";
   shared_ptr<file> testFile(new file("/tmp/syncdiff/test.txt"));
+  system("mkdir /tmp/syncdiff/");
   system("echo 'testtesttest\ntesttest' > /tmp/syncdiff/test~2019.txt");
   shared_ptr<conflictFile> confFile(new conflictFile("/tmp/syncdiff/test~2019.txt"));
   confFile->setSource(testFile);
