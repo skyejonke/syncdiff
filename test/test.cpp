@@ -86,8 +86,8 @@ TEST_CASE("parser tests", "[test]"){
   vector<string> names = vector<string>();
   SECTION("Get names"){
     names.push_back("test || /tmp/Notes/test.md");
-    names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
     names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
+    names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
     REQUIRE(*(p->getNames()) == names);
   }
 
@@ -103,8 +103,8 @@ TEST_CASE("parser tests", "[test]"){
   intsNo.push_back(0);
   intsNo.push_back(1);
 
-  vs.push_back(intsTest);
   vs.push_back(intsNo);
+  vs.push_back(intsTest);
   SECTION("Compare All"){
     auto c = p->compareAll();
     auto vi = vs.begin();
