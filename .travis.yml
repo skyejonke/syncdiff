@@ -1,13 +1,14 @@
 language: C++
 dist: Bionic
 
+script:
+  - ./build.sh
+
 addons:
   apt:
     update: true
     packages: lcov cmake
 
-before_script:
-  ./dirTesting.sh
 
 after_success:
   # Create lcov report
