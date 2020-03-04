@@ -18,6 +18,7 @@ class file {
   private:
     std::string directory;
     std::string name;
+  protected:
     std::string ext;
 };
 

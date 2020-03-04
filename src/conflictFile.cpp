@@ -18,11 +18,9 @@ bool conflictFile::setSource(shared_ptr<file> fileIn){
 // different.
 unique_ptr<vector<int>> conflictFile::compare(){
   unsigned long linesize = 70;
-  //cout << source << endl;
   unique_ptr<vector<int>> ints(new vector<int>);
 
   if (source != nullptr){
-    //cout << source->getDirectory() << endl;
     auto sour = source->getContents();
     auto conf = this->getContents();
     string sourline = "";
@@ -35,7 +33,6 @@ unique_ptr<vector<int>> conflictFile::compare(){
     for (unsigned long j = 0; j < linesize*2; j++){
       sep += "-";
     }
-    //cout << sep << endl;
 
 
     for (unsigned long i = 0; i < len; i++){
@@ -64,16 +61,12 @@ unique_ptr<vector<int>> conflictFile::compare(){
       while (confline.length() < linesize - 3){
         confline += " ";
       }
-
-      //cout << to_string(i) << sourline << to_string(i) << "  " << confline << endl;
-
     }
 
     sep = "";
     for (unsigned long j = 0; j < linesize*2; j++){
       sep += "-";
     }
-    //cout << sep << endl;
   }
   return ints;
 }
@@ -83,15 +76,13 @@ shared_ptr<file> conflictFile::getSource(){
 }
 
 shared_ptr<file> conflictFile::makeSource(){
-  cout << "started makesource" << endl;
   if (source == nullptr){
-    cout << "Found NULL" << endl;
     string nDir = "";
-    cout << getDirectory() << endl;
     string dir = getDirectory();
     bool withinVersions = false;
+    bool current = false;
     for (auto it = dir.cbegin(); it != dir.cend(); ++it){
-      cout <<  *(it+5) << endl;
+      current = false;
 
       if ((
             *it == '.'
@@ -104,20 +95,20 @@ shared_ptr<file> conflictFile::makeSource(){
             && *(it+2) == '0')
          ){
         withinVersions = true;
+        current = true;
       }
 
       if (!withinVersions){
         nDir += *it;
       }
 
-      if (*it == '/'){
+      if (*it == '/' && current){
         withinVersions = false;
       }
 
 
     }
-    cout << nDir << endl;
-    source = shared_ptr<file> (new file(nDir));
+    source = shared_ptr<file> (new file((nDir + ".").append(ext)));
   }
     return source;
 }

@@ -71,3 +71,12 @@ TEST_CASE("setting contents works correctly", "[contents]"){
   }
 }
 
+TEST_CASE("make source works", "[make]"){
+  string str = "testtesttest";
+  shared_ptr<file> testFile(new file("/tmp/syncdiff/test.txt"));
+  system("mkdir /tmp/syncdiff/ > /dev/null 2>&1");
+  system("mkdir /tmp/syncdiff/.stversions > /dev/null 2>&1");
+  system("echo 'testtesttest\ntesttest' > /tmp/syncdiff/.stversions/test~2019.txt");
+  shared_ptr<conflictFile> confFile(new conflictFile("/tmp/syncdiff/test~2019.txt"));
+  REQUIRE((confFile->makeSource())->getDirectory() == testFile->getDirectory());
+}
