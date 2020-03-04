@@ -20,7 +20,7 @@ parser::parser(string head){
     // of the files the command finds.
     while(getline(ifile, line)) {
       // If the file is in the stversions directory.
-      if (line.substr(0,13) == "./.stversions") {
+      if (line.substr(0,head.length() + 12) == head + "/.stversions") {
         confFiles.push_back(shared_ptr<conflictFile> (new conflictFile(line)));
         line = "";
       }
