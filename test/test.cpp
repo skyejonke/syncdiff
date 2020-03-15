@@ -86,8 +86,8 @@ TEST_CASE("parser tests", "[test]"){
   vector<string> names = vector<string>();
   SECTION("Get names"){
     names.push_back("test || /tmp/Notes/test.md");
-    names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
     names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
+    names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
     REQUIRE(*(p->getNames()) == names);
   }
 

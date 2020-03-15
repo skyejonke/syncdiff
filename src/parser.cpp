@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// Constructor that takes a string, which is the 'head' directory
 parser::parser(string head){
 
   /* system(("cd " + head).c_str()); */
@@ -32,7 +33,7 @@ parser::parser(string head){
   }
   setSources();
 }
-
+// Returns a vector of all of the file names
 unique_ptr<vector<string>> parser::getNames(){
   unique_ptr<vector<string>> output (new vector<string>);
   for (auto it = files.begin(); it != files.end(); ++it){
@@ -45,7 +46,6 @@ unique_ptr<vector<string>> parser::getNames(){
   }
   return output;
 }
-
 
 void parser::setSources(){
   for (auto itf = files.begin(); itf != files.end(); ++itf){
