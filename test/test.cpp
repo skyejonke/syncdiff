@@ -1,6 +1,9 @@
 #define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_FAST_COMPILE
 #include "catch.hpp"
 #include "file.hpp"
+#include "conflictfile.hpp"
+#include "parser.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -8,14 +11,106 @@
 using namespace std;
 TEST_CASE("files work as intended", "[file]"){
 
-  file *testFile = new file("/tmp/test.txt");
-  conflictFile *confFile = new conflictFile("/tmp/test~2019-11-12.txt");
+  shared_ptr<file> testFile(new file("/tmp/test.txt"));
+  shared_ptr<conflictFile> confFile(new conflictFile("/tmp/test~2019-11-12.txt"));
   SECTION("Files can be created"){
-    REQUIRE(testFile->name == "test");
+    REQUIRE(testFile->getName() == "test");
   }
   SECTION("isName works correctly"){
-    REQUIRE(testFile->isName(*confFile));
+    REQUIRE(testFile->isName(confFile));
   }
-  delete testFile;
-  delete confFile;
+}
+
+TEST_CASE("conflict files work as intended", "[conflictFile]"){
+  shared_ptr<file> testFile(new file("/tmp/test.txt"));
+  shared_ptr<conflictFile> confFile(new conflictFile("/tmp/test~2019-11-12.txt"));
+  shared_ptr<conflictFile> confFile2(new conflictFile("/tmp/tent~2019-11-12.txt"));
+
+  REQUIRE(testFile->getDirectory() == "/tmp/test.txt");
+
+  SECTION("Does isSource correctly identify sources?"){
+    REQUIRE(testFile->isSource(confFile));
+    REQUIRE_FALSE(testFile->isSource(confFile2));
+  }
+
+  SECTION("Does setting source work?"){
+    REQUIRE(confFile->setSource(testFile));
+    REQUIRE_FALSE(confFile->setSource(nullptr));
+  }
+}
+
+TEST_CASE("setting contents works correctly", "[contents]"){
+  string str = "testtesttest";
+  shared_ptr<file> testFile(new file("/tmp/syncdiff/test.txt"));
+  system("mkdir /tmp/syncdiff/ > /dev/null 2>&1");
+  system("echo 'testtesttest\ntesttest' > /tmp/syncdiff/test~2019.txt");
+  shared_ptr<conflictFile> confFile(new conflictFile("/tmp/syncdiff/test~2019.txt"));
+  confFile->setSource(testFile);
+  testFile->setContents(confFile);
+  auto f = testFile->getContents();
+  auto c = confFile->getContents();
+
+  for (string::size_type i = 0; i < f.size(); i++){
+    REQUIRE(f.at(i) == c.at(i));
+  }
+
+  system("echo 'testtesttest\ntetttest' > /tmp/syncdiff/test~2019.txt");
+
+  SECTION("Does comparing work?"){
+    vector<int> v = vector<int>();
+    v.push_back(1);
+    REQUIRE(*(confFile->compare())  == v);
+    v.push_back(0);
+    REQUIRE_FALSE(*(confFile->compare())  == v);
+  }
+
+  SECTION("Does comparing fail when source is null?"){
+    vector<int> v = vector<int>();
+    shared_ptr<conflictFile> confFile3(new conflictFile("/tmp/syncdiff/test~2020.txt"));
+    REQUIRE(*(confFile3->compare())  == v);
+  }
+}
+
+TEST_CASE("make source works", "[make]"){
+  string str = "testtesttest";
+  shared_ptr<file> testFile(new file("/tmp/syncdiff/test.txt"));
+  system("mkdir /tmp/syncdiff/ > /dev/null 2>&1");
+  system("mkdir /tmp/syncdiff/.stversions > /dev/null 2>&1");
+  system("echo 'testtesttest\ntesttest' > /tmp/syncdiff/.stversions/test~2019.txt");
+  shared_ptr<conflictFile> confFile(new conflictFile("/tmp/syncdiff/test~2019.txt"));
+  REQUIRE((confFile->makeSource())->getDirectory() == testFile->getDirectory());
+}
+
+TEST_CASE("parser tests", "[test]"){
+  unique_ptr<parser> p (new parser("/tmp/Notes"));
+  vector<string> names = vector<string>();
+  SECTION("Get names"){
+    names.push_back("test || /tmp/Notes/test.md");
+    names.push_back("test || /tmp/Notes/.stversions/test~2020.md");
+    names.push_back("noSource || /tmp/Notes/.stversions/noSource~2020.md");
+    REQUIRE(*(p->getNames()) == names);
+  }
+
+  system("echo 'testtesttest\ntesttest' > /tmp/Notes/.stversions/test~2020.md");
+  system("echo 'testtesttest\ntesttest' > /tmp/Notes/.stversions/noSource~2020.md");
+  system("echo 'testtesttest\ntttttest' > /tmp/Notes/test.md");
+
+  vector<vector<int>> vs = vector<vector<int>>();
+  vector<int> intsTest = vector<int>();
+  vector<int> intsNo = vector<int>();
+
+  intsTest.push_back(1);
+  intsNo.push_back(0);
+  intsNo.push_back(1);
+
+  vs.push_back(intsNo);
+  vs.push_back(intsTest);
+  SECTION("Compare All"){
+    auto c = p->compareAll();
+    auto vi = vs.begin();
+    for (auto ci = c.begin(); ci != c.end(); ++ci){
+      REQUIRE(ci->ints == *vi);
+      ++vi;
+    }
+  }
 }

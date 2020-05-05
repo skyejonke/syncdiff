@@ -1,7 +1,20 @@
 #include "file.hpp"
+#include "conflictfile.hpp"
+#include "parser.hpp"
 
+using namespace std;
 int main() {
-  parser par = parser();
+  unique_ptr<parser> par (new parser("."));
+  unique_ptr<vector<string>> names = par->getNames();
+  auto pairs =  par->compareAll();
+  for (auto it = pairs.begin(); it != pairs.cend(); ++it){
+    cout << ((it->source != nullptr) ? it->source->getName() : "NONE") << " | " << it->conf->getName() << endl;
+  }
+  // for (auto it = names->begin(); it != names->end(); ++it){
+  //  cout << *it << endl;
+  //}
+  //par->setSources();
+  //par->compareAll();
   /* file test = file("test.txt"); */
   /* vector<string> t = test.getContents(); */
 

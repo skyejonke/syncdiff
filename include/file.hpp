@@ -13,11 +13,12 @@ class file {
     bool setContents(std::shared_ptr<file> fileIn);
     bool isSource(std::shared_ptr<file> fileIn);
     bool isName(std::shared_ptr<file> fileIn);
+    std::string getName();
+    std::string getDirectory();
   private:
     std::string directory;
     std::string name;
+  protected:
     std::string ext;
 };
 
-#include "conflictfile.hpp"
-#include "parser.hpp"
